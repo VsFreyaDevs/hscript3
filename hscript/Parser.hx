@@ -917,7 +917,13 @@ class Parser {
 				if( op == "<" ) {
 					params = [];
 					while( true ) {
-						params.push(parseType());
+						switch( token() ) {
+						case TConst(c):
+							params.push(CTExpr(mk(EConst(c))));
+						case tk:
+							push(tk);
+							params.push(parseType());
+						}
 						t = token();
 						switch( t ) {
 						case TComma: continue;
@@ -943,8 +949,8 @@ class Parser {
 			}
 			return parseTypeNext(CTPath(path, params));
 		case TPOpen:
-			var a = token(),
-					b = token();
+			var a = token();
+			var b = token();
 
 			push(b);
 			push(a);
